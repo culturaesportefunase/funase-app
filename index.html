@@ -5,22 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Atividades Cultura, Lazer e Esportes - FUNASE</title>
 
-  <!-- PWA Meta Tags -->
+  <!-- PWA -->
   <meta name="description" content="Sistema de registro de atividades e convites da FUNASE - Fundação de Atendimento Socioeducativo" />
   <meta name="theme-color" content="#1e3a8a" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="FUNASE" />
   <meta name="mobile-web-app-capable" content="yes" />
-
-  <!-- PWA Manifest -->
   <link rel="manifest" href="/manifest.json" />
 
-  <!-- CSS -->
+  <!-- CSS principal -->
   <link rel="stylesheet" href="/style.css" />
 
+  <!-- Ajustes rápidos locais -->
   <style>
-    /* Correções rápidas locais */
     .input-with-buttons{position:relative;width:100%;margin-bottom:15px}
     .input-with-buttons input{width:100%;padding:12px;padding-right:90px;border:2px solid #e1e8ed;border-radius:8px;font-size:16px}
     .input-buttons{position:absolute;right:0;top:0;height:100%;display:flex;align-items:center;padding-right:5px}
@@ -40,6 +38,20 @@
     .photo-preview{display:inline-block;margin:5px;position:relative}
     .photo-preview img{width:100px;height:100px;object-fit:cover;border-radius:8px}
     .photo-remove{position:absolute;top:-5px;right:-5px;background:#dc3545;color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px}
+    /* blocos simples */
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+    .list{display:grid;gap:12px}
+    .muted{color:#6b7280;font-size:14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1}
+    .btn{border:none;border-radius:8px;padding:10px 14px;cursor:pointer}
+    .btn-primary{background:#2563eb;color:#fff}
+    .btn-danger{background:#ef4444;color:#fff}
+    .btn-secondary{background:#6b7280;color:#fff}
+    .btn-outline{background:transparent;border:1px solid #cbd5e1}
+    .tag{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:12px;background:#eef2ff;color:#3730a3}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left}
   </style>
 </head>
 <body>
@@ -103,88 +115,45 @@
 
     <!-- Main -->
     <main class="main-content" id="mainContent" style="display:none;">
+
       <!-- Tela inicial -->
       <div id="welcomeSection" class="content-section" style="display:block;">
         <div class="welcome-container">
           <div class="welcome-header">
             <h2>🎯 Bem-vindo ao Sistema FUNASE</h2>
-            <p>Escolha uma das opções abaixo para começar:</p>
-          </div>
-
-          <div class="welcome-grid">
-            <div class="welcome-card" onclick="showSection('formSection')">
-              <div class="card-icon">📝</div>
-              <h3>Registrar Atividade</h3>
-              <p>Cadastre uma nova atividade de cultura, lazer ou esportes</p>
-            </div>
-
-            <div class="welcome-card" onclick="showSection('cadastrarConviteSection')" id="welcomeConviteCard" style="display:none;">
-              <div class="card-icon">🎫</div>
-              <h3>Cadastrar Convite</h3>
-              <p>Crie um novo convite para eventos e atividades</p>
-            </div>
-
-            <div class="welcome-card" onclick="showSection('convitesDisponiveisSection')">
-              <div class="card-icon">📨</div>
-              <h3>Convites Disponíveis</h3>
-              <p>Veja e participe dos convites disponíveis</p>
-            </div>
-
-            <div class="welcome-card" onclick="showSection('minhasInscricoesSection')">
-              <div class="card-icon">✅</div>
-              <h3>Minhas Inscrições</h3>
-              <p>Acompanhe suas inscrições em atividades</p>
-            </div>
-
-            <div class="welcome-card" onclick="showSection('savedFormsSection')">
-              <div class="card-icon">📋</div>
-              <h3>Formulários Salvos</h3>
-              <p>Acesse seus rascunhos e formulários salvos</p>
-            </div>
-
-            <div class="welcome-card" onclick="showSection('dashboardSection')">
-              <div class="card-icon">📊</div>
-              <h3>Dashboard</h3>
-              <p>Visualize estatísticas e relatórios</p>
-            </div>
+            <p>Escolha uma das opções acima para começar.</p>
           </div>
         </div>
       </div>
 
-      <!-- Formulário de atividade (exemplo base igual ao seu) -->
+      <!-- Registrar Atividade -->
       <div id="formSection" class="content-section">
         <div class="form-container">
-          <div class="activity-card" id="activity-1">
-            <div class="activity-header">
-              <div class="activity-title">📝 Atividade 1</div>
-              <div class="activity-actions">
-                <button class="remove-btn" onclick="removeActivity(1)">🗑️ Remover</button>
+          <div class="activity-card card" id="activity-1">
+            <div class="activity-header row" style="align-items:center;">
+              <div class="activity-title"><strong>📝 Atividade 1</strong></div>
+              <div style="margin-left:auto">
+                <button class="btn btn-danger" onclick="removeActivity(1)">🗑️ Remover</button>
               </div>
             </div>
 
-            <div class="form-row mobile-stack">
+            <div class="form-row mobile-stack row">
               <div class="form-group">
                 <label for="data-1">📅 Data da Atividade:</label>
                 <input type="date" id="data-1" required />
               </div>
-
               <div class="form-group">
                 <label for="periodo-1">⏰ Período:</label>
                 <select id="periodo-1" required>
-                  <option value="">Selecione o período...</option>
-                  <option value="Manhã">☀️ Manhã</option>
-                  <option value="Tarde">🌅 Tarde</option>
-                  <option value="Noite">🌙 Noite</option>
-                  <option value="Integral">📅 Integral</option>
+                  <option value="">Selecione...</option>
+                  <option>Manhã</option><option>Tarde</option><option>Noite</option><option>Integral</option>
                 </select>
               </div>
-
               <div class="form-group">
                 <label for="tipo-atividade-1">🏠 Tipo de Atividade:</label>
                 <select id="tipo-atividade-1" required>
-                  <option value="">Selecione o tipo...</option>
-                  <option value="Interna">🏢 Atividade Interna</option>
-                  <option value="Externa">🌍 Atividade Externa</option>
+                  <option value="">Selecione...</option>
+                  <option>Interna</option><option>Externa</option>
                 </select>
               </div>
             </div>
@@ -192,7 +161,7 @@
             <div class="form-group">
               <label for="atividade-1">🎯 Nome da Atividade:</label>
               <div class="input-with-buttons">
-                <input type="text" id="atividade-1" placeholder="Digite o nome da atividade ou clique na seta para ver opções" required />
+                <input type="text" id="atividade-1" placeholder="Digite o nome da atividade..." required />
                 <div class="input-buttons">
                   <button class="input-button dropdown-button" onclick="toggleActivityDropdown(1)" title="Ver opções">⬇️</button>
                   <button class="input-button star-button" onclick="saveFavoriteActivity(1)" title="Salvar como Favorita">⭐</button>
@@ -202,28 +171,28 @@
             </div>
 
             <div class="form-group">
-              <label for="description-1">📝 Descrição Detalhada da Atividade (opcional):</label>
-              <textarea id="description-1" rows="5" placeholder="Descreva detalhadamente como foi a atividade..." oninput="updateCharCounter(1)"></textarea>
-              <div class="char-counter" id="char-counter-1">0 / 1000 palavras</div>
+              <label for="description-1">📝 Descrição Detalhada (opcional):</label>
+              <textarea id="description-1" rows="5" oninput="updateCharCounter(1)"></textarea>
+              <div class="char-counter muted" id="char-counter-1">0 / 1000 palavras</div>
             </div>
 
             <div class="form-group">
               <label for="promotor-1">🎪 Promovido por:</label>
-              <div class="promotor-container">
+              <div class="promotor-container row">
                 <select id="promotor-1" required>
-                  <option value="">Selecione quem promoveu...</option>
-                  <option value="Própria Unidade">🏢 Própria Unidade</option>
-                  <option value="Eixo Cultura">🎭 Eixo Cultura</option>
+                  <option value="">Selecione...</option>
+                  <option>Própria Unidade</option>
+                  <option>Eixo Cultura</option>
                 </select>
                 <div class="button-row">
                   <button class="action-button add-button" onclick="addPromotor(1)" title="Adicionar Novo Promotor">➕</button>
-                  <button class="action-button star-button" onclick="saveFavoritePromotor(1)" title="Salvar Promotor como Favorito">⭐</button>
+                  <button class="action-button star-button" onclick="saveFavoritePromotor(1)" title="Salvar Favorito">⭐</button>
                 </div>
               </div>
             </div>
 
             <div class="form-group">
-              <label for="jovens-1">👥 Jovens Participantes:</label>
+              <label>👥 Jovens Participantes:</label>
               <div class="participants-container" id="jovens-container-1">
                 <div class="participant-input" id="jovem-input-1-1">
                   <input type="text" id="jovem-1-1" placeholder="Nome do jovem 1" oninput="updateParticipantStatus(1,1,'jovem')" />
@@ -236,12 +205,12 @@
             </div>
 
             <div class="form-group">
-              <label for="equipe-1">👔 Equipe Participante:</label>
+              <label>👔 Equipe Participante:</label>
               <div class="team-container" id="equipe-container-1">
                 <div class="team-member" id="equipe-member-1-1">
                   <input type="text" id="equipe-nome-1-1" placeholder="Nome do membro da equipe" oninput="updateParticipantStatus(1,1,'equipe')" />
                   <button class="action-button star-button" onclick="saveFavoriteParticipante(1,1)" title="Salvar Participante como Favorito">⭐</button>
-
+                  <button class="action-button remove-button" onclick="removeTeamMember(1,1)" title="Remover Membro">🗑️</button>
                   <div class="cargo-container">
                     <div class="input-with-buttons">
                       <input type="text" id="equipe-cargo-1-1" placeholder="Digite o cargo ou clique na seta" oninput="updateParticipantStatus(1,1,'cargo')" />
@@ -274,311 +243,30 @@
             </div>
           </div>
 
-          <div class="add-activity-container">
-            <button class="add-activity-btn" onclick="addNewActivity()">➕ Adicionar Nova Atividade</button>
-            <button class="duplicate-btn" onclick="duplicateLastActivity()">📋 Duplicar Última Atividade</button>
+          <div class="add-activity-container row">
+            <button class="btn btn-primary" onclick="addNewActivity()">➕ Adicionar Nova Atividade</button>
+            <button class="btn btn-secondary" onclick="duplicateLastActivity()">📋 Duplicar Última Atividade</button>
           </div>
         </div>
       </div>
 
-      <!-- Outras seções podem ser adicionadas aqui... -->
-
-    </main>
-  </div>
-
-  <!-- Scripts -->
-  <script>
-    // Variáveis globais
-    let currentUser = null;
-    let activityCounter = 1;
-    let favoriteActivities = JSON.parse(localStorage.getItem('favoriteActivities') || '[]');
-    let favoritePromotors = JSON.parse(localStorage.getItem('favoritePromotors') || '[]');
-    let favoriteCargos = JSON.parse(localStorage.getItem('favoriteCargos') || '[]');
-    let favoriteJovens  = JSON.parse(localStorage.getItem('favoriteJovens')  || '[]');
-
-    // LOGIN robusto
-    function login() {
-      const rawEmail   = document.getElementById('email').value;
-      const email      = rawEmail.trim().toLowerCase();   // normaliza
-      const password   = document.getElementById('password').value;
-      const rememberMe = document.getElementById('rememberMe').checked;
-
-      if (!/@funase\.pe\.gov\.br$/.test(email)) {
-        alert('❌ Use apenas e-mails @funase.pe.gov.br');
-        return;
-      }
-      if (password !== 'funase2024') {
-        alert('❌ Senha incorreta');
-        return;
-      }
-
-      currentUser = email;
-      if (rememberMe) localStorage.setItem('rememberedUser', email);
-
-      document.getElementById('loginSection').style.display = 'none';
-      document.getElementById('menu').style.display = 'block';
-      document.getElementById('mainContent').style.display = 'block';
-      document.getElementById('userSection').style.display = 'block';
-      document.getElementById('userEmail').textContent = email;
-
-      if (email === 'cultura@funase.pe.gov.br') {
-        document.getElementById('cadastrarConviteBtn').style.display = 'block';
-        document.getElementById('backupBtn').style.display = 'block';
-        document.getElementById('usuariosBtn').style.display = 'block';
-        document.getElementById('relatoriosJuizBtn').style.display = 'block';
-        document.getElementById('welcomeConviteCard').style.display = 'block';
-      }
-
-      showSection('welcomeSection');
-    }
-
-    function logout() {
-      currentUser = null;
-      localStorage.removeItem('rememberedUser');
-      document.getElementById('loginSection').style.display = 'block';
-      document.getElementById('menu').style.display = 'none';
-      document.getElementById('mainContent').style.display = 'none';
-      document.getElementById('userSection').style.display = 'none';
-      document.getElementById('email').value = '';
-      document.getElementById('password').value = '';
-    }
-
-    function showSection(id) {
-      document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-      const tgt = document.getElementById(id);
-      if (tgt) tgt.style.display = 'block';
-    }
-
-    // Dropdown de atividades
-    function toggleActivityDropdown(activityId) {
-      const dd = document.getElementById(`dropdown-${activityId}`);
-      if (dd.style.display === 'none') { loadActivityDropdown(activityId); dd.style.display = 'block'; }
-      else dd.style.display = 'none';
-    }
-    function loadActivityDropdown(activityId) {
-      const dd = document.getElementById(`dropdown-${activityId}`);
-      const activities = ['🎭 Teatro','🎵 Música','🎨 Artes Plásticas','⚽ Futebol','🏀 Basquete','🏐 Vôlei','🎮 Jogos','📚 Leitura','🎪 Circo','💃 Dança'];
-      dd.innerHTML = '';
-      activities.forEach(a => {
-        const el = document.createElement('div');
-        el.className = 'dropdown-item';
-        el.textContent = a;
-        el.onclick = () => selectActivity(activityId, a);
-        dd.appendChild(el);
-      });
-      favoriteActivities.forEach(a => {
-        const el = document.createElement('div');
-        el.className = 'dropdown-item';
-        el.textContent = `⭐ ${a}`;
-        el.onclick = () => selectActivity(activityId, a);
-        dd.appendChild(el);
-      });
-    }
-    function selectActivity(activityId, a) {
-      document.getElementById(`atividade-${activityId}`).value = a.replace('⭐ ', '');
-      document.getElementById(`dropdown-${activityId}`).style.display = 'none';
-    }
-    function saveFavoriteActivity(activityId) {
-      const a = document.getElementById(`atividade-${activityId}`).value;
-      if (a && !favoriteActivities.includes(a)) {
-        favoriteActivities.push(a);
-        localStorage.setItem('favoriteActivities', JSON.stringify(favoriteActivities));
-        alert('⭐ Atividade salva como favorita!');
-      }
-    }
-
-    // Jovens
-    function addJovem(activityId) {
-      const c = document.getElementById(`jovens-container-${activityId}`);
-      const n = c.querySelectorAll('.participant-input').length + 1;
-      const d = document.createElement('div');
-      d.className = 'participant-input';
-      d.id = `jovem-input-${activityId}-${n}`;
-      d.innerHTML = `<input type="text" id="jovem-${activityId}-${n}" placeholder="Nome do jovem ${n}" oninput="updateParticipantStatus(${activityId},${n},'jovem')">
-                     <button class="action-button remove-button" onclick="removeJovem(${activityId},${n})" title="Remover Jovem">🗑️</button>`;
-      const row = c.querySelector('.button-row');
-      c.insertBefore(d, row);
-    }
-    function removeJovem(activityId, jovemId) {
-      const el = document.getElementById(`jovem-input-${activityId}-${jovemId}`);
-      if (el) el.remove();
-    }
-    function saveFavoriteJovem(activityId, jovemId) {
-      const nome = document.getElementById(`jovem-${activityId}-${jovemId}`).value;
-      if (nome && !favoriteJovens.includes(nome)) {
-        favoriteJovens.push(nome);
-        localStorage.setItem('favoriteJovens', JSON.stringify(favoriteJovens));
-        alert('⭐ Jovem salvo como favorito!');
-      }
-    }
-
-    // Equipe
-    function addTeamMember(activityId) {
-      const c = document.getElementById(`equipe-container-${activityId}`);
-      const n = c.querySelectorAll('.team-member').length + 1;
-      const d = document.createElement('div');
-      d.className = 'team-member';
-      d.id = `equipe-member-${activityId}-${n}`;
-      d.innerHTML = `
-        <input type="text" id="equipe-nome-${activityId}-${n}" placeholder="Nome do membro da equipe" oninput="updateParticipantStatus(${activityId},${n},'equipe')">
-        <button class="action-button star-button" onclick="saveFavoriteParticipante(${activityId},${n})" title="Salvar Participante como Favorito">⭐</button>
-        <button class="action-button remove-button" onclick="removeTeamMember(${activityId},${n})" title="Remover Membro">🗑️</button>
-        <div class="cargo-container">
-          <div class="input-with-buttons">
-            <input type="text" id="equipe-cargo-${activityId}-${n}" placeholder="Digite o cargo ou clique na seta" oninput="updateParticipantStatus(${activityId},${n},'cargo')">
-            <div class="input-buttons">
-              <button class="input-button dropdown-button" onclick="toggleCargoDropdown(${activityId},${n})" title="Ver opções">⬇️</button>
-              <button class="input-button star-button" onclick="saveFavoriteCargo(${activityId},${n})" title="Salvar Cargo como Favorito">⭐</button>
-            </div>
-            <div class="activity-dropdown" id="cargo-dropdown-${activityId}-${n}" style="display:none;"></div>
+      <!-- Cadastrar Convite (ADMIN) -->
+      <div id="cadastrarConviteSection" class="content-section" style="display:none;">
+        <div class="card">
+          <h3>🎫 Novo Convite</h3>
+          <div class="row">
+            <div><label>Título</label><input id="cv-titulo" placeholder="Nome do evento"></div>
+            <div><label>Local</label><input id="cv-local" placeholder="Auditório..."></div>
           </div>
-        </div>`;
-      const addBtn = c.querySelector('.add-button');
-      c.insertBefore(d, addBtn);
-    }
-    function removeTeamMember(activityId, memberId) {
-      const el = document.getElementById(`equipe-member-${activityId}-${memberId}`);
-      if (el) el.remove();
-    }
-    function toggleCargoDropdown(activityId, memberId) {
-      const dd = document.getElementById(`cargo-dropdown-${activityId}-${memberId}`);
-      if (dd.style.display === 'none') { loadCargoDropdown(activityId, memberId); dd.style.display = 'block'; }
-      else dd.style.display = 'none';
-    }
-    function loadCargoDropdown(activityId, memberId) {
-      const dd = document.getElementById(`cargo-dropdown-${activityId}-${memberId}`);
-      const cargos = ['👨‍🏫 Professor','👩‍💼 Coordenador','👨‍⚕️ Psicólogo','👩‍⚕️ Assistente Social','👨‍💻 Técnico','👩‍🎓 Pedagogo','👨‍🎨 Arte-educador','👩‍🏃 Educador Físico'];
-      dd.innerHTML = '';
-      cargos.forEach(c => {
-        const el = document.createElement('div');
-        el.className = 'dropdown-item';
-        el.textContent = c;
-        el.onclick = () => selectCargo(activityId, memberId, c);
-        dd.appendChild(el);
-      });
-      favoriteCargos.forEach(c => {
-        const el = document.createElement('div');
-        el.className = 'dropdown-item';
-        el.textContent = `⭐ ${c}`;
-        el.onclick = () => selectCargo(activityId, memberId, c);
-        dd.appendChild(el);
-      });
-    }
-    function selectCargo(activityId, memberId, cargo) {
-      document.getElementById(`equipe-cargo-${activityId}-${memberId}`).value = cargo.replace('⭐ ', '');
-      document.getElementById(`cargo-dropdown-${activityId}-${memberId}`).style.display = 'none';
-    }
-    function saveFavoriteCargo(activityId, memberId) {
-      const cargo = document.getElementById(`equipe-cargo-${activityId}-${memberId}`).value;
-      if (cargo && !favoriteCargos.includes(cargo)) {
-        favoriteCargos.push(cargo);
-        localStorage.setItem('favoriteCargos', JSON.stringify(favoriteCargos));
-        alert('⭐ Cargo salvo como favorito!');
-      }
-    }
-    function saveFavoriteParticipante(activityId, memberId) {
-      const nome = document.getElementById(`equipe-nome-${activityId}-${memberId}`).value;
-      if (nome && !favoriteJovens.includes(nome)) {
-        favoriteJovens.push(nome);
-        localStorage.setItem('favoriteJovens', JSON.stringify(favoriteJovens));
-        alert('⭐ Participante salvo como favorito!');
-      }
-    }
-
-    // Promotor
-    function addPromotor(activityId) {
-      const p = prompt('Digite o nome do novo promotor:');
-      if (p) {
-        const sel = document.getElementById(`promotor-${activityId}`);
-        const o = document.createElement('option');
-        o.value = p; o.textContent = p;
-        sel.appendChild(o); sel.value = p;
-      }
-    }
-    function saveFavoritePromotor(activityId) {
-      const p = document.getElementById(`promotor-${activityId}`).value;
-      if (p && !favoritePromotors.includes(p)) {
-        favoritePromotors.push(p);
-        localStorage.setItem('favoritePromotors', JSON.stringify(favoritePromotors));
-        alert('⭐ Promotor salvo como favorito!');
-      }
-    }
-
-    // Fotos
-    function triggerPhotoUpload(activityId) { document.getElementById(`photo-input-${activityId}`).click(); }
-    function handlePhotoUpload(input, activityId) {
-      const c = document.getElementById(`photo-container-${activityId}`);
-      const files = input.files;
-      for (let i=0;i<files.length && i<10;i++){
-        const file = files[i];
-        const reader = new FileReader();
-        reader.onload = e => {
-          const p = document.createElement('div');
-          p.className = 'photo-preview';
-          p.innerHTML = `<img src="${e.target.result}" alt="Foto da atividade"><button class="photo-remove" onclick="removePhoto(this)">×</button>`;
-          const btn = c.querySelector('.photo-upload-btn');
-          c.insertBefore(p, btn);
-        };
-        reader.readAsDataURL(file);
-      }
-    }
-    function removePhoto(btn){ btn.parentElement.remove(); }
-
-    // Salvar/Enviar atividade (localStorage)
-    function saveActivity(activityId){
-      const data = {
-        id: activityId,
-        data: document.getElementById(`data-${activityId}`).value,
-        periodo: document.getElementById(`periodo-${activityId}`).value,
-        tipo: document.getElementById(`tipo-atividade-${activityId}`).value,
-        atividade: document.getElementById(`atividade-${activityId}`).value,
-        descricao: document.getElementById(`description-${activityId}`).value,
-        promotor: document.getElementById(`promotor-${activityId}`).value,
-        timestamp: new Date().toISOString()
-      };
-      data.jovens = [];
-      document.querySelectorAll(`#jovens-container-${activityId} input[type="text"]`).forEach(i => { if(i.value.trim()) data.jovens.push(i.value.trim()); });
-      data.equipe = [];
-      document.querySelectorAll(`#equipe-container-${activityId} .team-member`).forEach(m => {
-        const nome = m.querySelector('input[id*="equipe-nome"]').value;
-        const cargo= m.querySelector('input[id*="equipe-cargo"]').value;
-        if (nome.trim()) data.equipe.push({nome:nome.trim(), cargo:cargo.trim()});
-      });
-      let saved = JSON.parse(localStorage.getItem('savedActivities') || '[]');
-      const idx = saved.findIndex(a => a.id === activityId);
-      if (idx>=0) saved[idx] = data; else saved.push(data);
-      localStorage.setItem('savedActivities', JSON.stringify(saved));
-      alert('💾 Atividade salva com sucesso!');
-    }
-    function sendActivity(activityId){ saveActivity(activityId); alert('📧 Atividade enviada por e-mail! (Funcionalidade simulada)'); }
-    function addNewActivity(){ activityCounter++; alert('➕ Nova atividade adicionada!'); }
-    function duplicateLastActivity(){ alert('📋 Atividade duplicada!'); }
-    function removeActivity(activityId){ if(confirm('Tem certeza que deseja remover esta atividade?')){ const el=document.getElementById(`activity-${activityId}`); if(el) el.remove(); } }
-    function updateCharCounter(activityId){
-      const t = document.getElementById(`description-${activityId}`);
-      const c = document.getElementById(`char-counter-${activityId}`);
-      const words = t.value.trim().split(/\s+/).filter(w=>w.length>0);
-      c.textContent = `${words.length} / 1000 palavras`;
-    }
-    function updateParticipantStatus(){/* reservado */ }
-
-    // Ao carregar, aplica "lembrar-me"
-    window.addEventListener('load', () => {
-      const rememberedUser = localStorage.getItem('rememberedUser');
-      if (rememberedUser) {
-        document.getElementById('email').value = rememberedUser;
-        document.getElementById('rememberMe').checked = true;
-      }
-    });
-
-    // Registro ÚNICO do Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(reg => console.log('SW registrado:', reg.scope))
-          .catch(err => console.error('Falha ao registrar SW:', err));
-      });
-    }
-  </script>
-</body>
-</html>
+          <div class="row">
+            <div><label>Data</label><input id="cv-data" type="date"></div>
+            <div><label>Vagas</label><input id="cv-vagas" type="number" min="1" value="10"></div>
+          </div>
+          <div class="row">
+            <div class="row" style="flex:1"><label>Descrição</label><textarea id="cv-desc" rows="3" placeholder="Detalhes..."></textarea></div>
+          </div>
+          <button class="btn btn-primary" onclick="criarConvite()">Salvar Convite</button>
+        </div>
+        <div class="card">
+          <h4>Convites Criados</h4>
+          <div id="adminConvites
