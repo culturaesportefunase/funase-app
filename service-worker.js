@@ -1,6 +1,5 @@
 // Nome do cache
-const CACHE_NAME = 'funase-app-final-v1.0';
-
+const CACHE_NAME = 'funase-app-final-v1.2'
 // Arquivos para cache inicial
 const urlsToCache = [
   '/',
