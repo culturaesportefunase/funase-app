@@ -5,53 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Atividades Cultura, Lazer e Esportes - FUNASE</title>
 
-  <!-- PWA -->
-  <meta name="description" content="Sistema de registro de atividades e convites da FUNASE - Fundação de Atendimento Socioeducativo" />
-  <meta name="theme-color" content="#1e3a8a" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="apple-mobile-web-app-title" content="FUNASE" />
-  <meta name="mobile-web-app-capable" content="yes" />
-  <link rel="manifest" href="/manifest.json" />
-
-  <!-- CSS principal -->
+  <!-- só o seu CSS -->
   <link rel="stylesheet" href="/style.css" />
 
-  <!-- Ajustes rápidos locais -->
   <style>
-    .input-with-buttons{position:relative;width:100%;margin-bottom:15px}
-    .input-with-buttons input{width:100%;padding:12px;padding-right:90px;border:2px solid #e1e8ed;border-radius:8px;font-size:16px}
-    .input-buttons{position:absolute;right:0;top:0;height:100%;display:flex;align-items:center;padding-right:5px}
-    .input-button{width:36px;height:36px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;margin-left:5px}
-    .dropdown-button{background:#6c757d;color:#fff}
-    .star-button{background:#ffc107;color:#212529}
-    .button-row{display:flex;gap:10px;margin:10px 0}
-    .action-button{width:44px;height:44px;border-radius:50%;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;box-shadow:0 2px 5px rgba(0,0,0,.2)}
-    .add-button{background:#28a745;color:#fff}
-    .remove-button{background:#dc3545;color:#fff}
-    .save-btn{background:#007bff;color:#fff;padding:12px 24px;border:none;border-radius:8px;cursor:pointer;font-size:16px;margin:10px 5px}
-    .activity-dropdown{position:absolute;top:100%;left:0;right:0;background:#fff;border:1px solid #ddd;border-radius:8px;max-height:200px;overflow-y:auto;z-index:1000;box-shadow:0 4px 6px rgba(0,0,0,.1)}
-    .dropdown-item{padding:10px;cursor:pointer;border-bottom:1px solid #eee}
-    .dropdown-item:hover{background:#f8f9fa}
-    .photo-upload-btn{border:2px dashed #ddd;padding:20px;text-align:center;cursor:pointer;border-radius:8px;margin:10px 0}
-    .photo-upload-btn:hover{border-color:#007bff;background:#f8f9fa}
-    .photo-preview{display:inline-block;margin:5px;position:relative}
-    .photo-preview img{width:100px;height:100px;object-fit:cover;border-radius:8px}
-    .photo-remove{position:absolute;top:-5px;right:-5px;background:#dc3545;color:#fff;border:none;border-radius:50%;width:20px;height:20px;cursor:pointer;font-size:12px}
-    /* blocos simples */
-    .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-    .list{display:grid;gap:12px}
-    .muted{color:#6b7280;font-size:14px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:16px;margin:12px 0}
+    .menu .menu-button{margin:4px 6px}
+    .muted{color:#6b7280}
     .row{display:flex;gap:10px;flex-wrap:wrap}
-    .row > *{flex:1}
     .btn{border:none;border-radius:8px;padding:10px 14px;cursor:pointer}
     .btn-primary{background:#2563eb;color:#fff}
-    .btn-danger{background:#ef4444;color:#fff}
-    .btn-secondary{background:#6b7280;color:#fff}
-    .btn-outline{background:transparent;border:1px solid #cbd5e1}
-    .tag{display:inline-block;padding:2px 8px;border-radius:9999px;font-size:12px;background:#eef2ff;color:#3730a3}
-    table{width:100%;border-collapse:collapse}
-    th,td{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left}
+    .logout-btn{background:#ef4444;color:#fff;border:none;border-radius:8px;padding:8px 12px;cursor:pointer}
   </style>
 </head>
 <body>
@@ -74,255 +38,187 @@
     </header>
 
     <!-- Login -->
-    <script>
-// ======= Login (robusto e com mensagens) =======
-let currentUser = null;
-let isAdmin = false;
-let admins = JSON.parse(localStorage.getItem('admins') || '["cultura@funase.pe.gov.br"]');
+    <div id="loginSection" class="login-section">
+      <div class="login-container">
+        <div class="login-header">
+          <h2>🔐 Acesso ao Sistema</h2>
+          <p>Entre com suas credenciais da FUNASE</p>
+        </div>
 
-function setMsg(txt, ok=false){
-  const el = document.getElementById('loginMsg');
-  if(!el) return;
-  el.textContent = txt;
-  el.style.color = ok ? '#16a34a' : '#ef4444';
-}
-
-function doLogin(email){
-  currentUser = email;
-  isAdmin = admins.includes(email);
-
-  // mostra seções
-  document.getElementById('loginSection').style.display = 'none';
-  document.getElementById('menu').style.display = 'block';
-  document.getElementById('mainContent').style.display = 'block';
-  document.getElementById('userSection').style.display = 'block';
-  document.getElementById('userEmail').textContent = email;
-
-  // botões de admin
-  ['cadastrarConviteBtn','backupBtn','usuariosBtn','relatoriosJuizBtn','welcomeConviteCard']
-    .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = isAdmin ? 'block' : 'none'; });
-
-  // vai pro dashboard
-  if (typeof showSection === 'function') showSection('dashboardSection');
-}
-
-function logout(){
-  currentUser = null; isAdmin = false;
-  localStorage.removeItem('rememberedUser');
-  document.getElementById('loginSection').style.display = 'block';
-  document.getElementById('menu').style.display = 'none';
-  document.getElementById('mainContent').style.display = 'none';
-  document.getElementById('userSection').style.display = 'none';
-  document.getElementById('email').value = '';
-  document.getElementById('password').value = '';
-  setMsg('');
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  // lembrar usuário
-  const rememberedUser = localStorage.getItem('rememberedUser');
-  if (rememberedUser) {
-    const emailEl = document.getElementById('email');
-    const chk = document.getElementById('rememberMe');
-    if (emailEl) emailEl.value = rememberedUser;
-    if (chk) chk.checked = true;
-  }
-
-  // submit do formulário
-  const form = document.getElementById('loginForm');
-  if (form) {
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = (document.getElementById('email').value || '').trim().toLowerCase();
-      const password = (document.getElementById('password').value || '').trim();
-      const remember = document.getElementById('rememberMe').checked;
-
-      // mensagens de debug amigáveis
-      if (!email.endsWith('@funase.pe.gov.br')) {
-        setMsg('Use apenas e-mails @funase.pe.gov.br'); return;
-      }
-      if (password !== 'funase2024') {
-        setMsg('Senha incorreta'); return;
-      }
-
-      if (remember) localStorage.setItem('rememberedUser', email);
-      setMsg('Entrando...', true);
-      doLogin(email);
-    });
-  }
-});
-</script>
+        <form id="loginForm" autocomplete="on">
+          <div class="form-group">
+            <label for="email">📧 E-mail:</label>
+            <input type="email" id="email" placeholder="seu.email@funase.pe.gov.br" required autocomplete="username" />
+          </div>
+          <div class="form-group">
+            <label for="password">🔑 Senha:</label>
+            <input type="password" id="password" placeholder="Digite sua senha" required autocomplete="current-password" />
+          </div>
+          <div class="form-group">
+            <label><input type="checkbox" id="rememberMe" /> Lembrar-me</label>
+          </div>
+          <button type="submit" class="login-btn">🚀 Entrar</button>
+          <div id="loginMsg" class="muted" style="margin-top:8px;"></div>
+        </form>
+      </div>
+    </div>
 
     <!-- Menu -->
     <nav class="menu" id="menu" style="display:none;">
       <div class="menu-container">
         <button class="menu-button" onclick="showSection('formSection')">📝 Registrar Atividade</button>
-        <button class="menu-button" id="cadastrarConviteBtn" onclick="showSection('cadastrarConviteSection')" style="display:none;">🎫 Cadastrar Convite</button>
         <button class="menu-button" onclick="showSection('convitesDisponiveisSection')">📨 Convites Disponíveis</button>
         <button class="menu-button" onclick="showSection('minhasInscricoesSection')">✅ Minhas Inscrições</button>
         <button class="menu-button" onclick="showSection('savedFormsSection')">📋 Formulários Salvos</button>
         <button class="menu-button" onclick="showSection('dashboardSection')">📊 Dashboard</button>
-        <button class="menu-button" onclick="showSection('whatsappSection')">📱 Dados WhatsApp</button>
-        <button class="menu-button" id="backupBtn" onclick="showSection('backupSection')" style="display:none;">🛡️ Backup</button>
-        <button class="menu-button" id="usuariosBtn" onclick="showSection('gerenciarUsuariosSection')" style="display:none;">👥 Usuários</button>
-        <button class="menu-button" id="relatoriosJuizBtn" onclick="showSection('relatoriosJuizSection')" style="display:none;">⚖️ Relatórios Juiz</button>
       </div>
     </nav>
 
     <!-- Main -->
     <main class="main-content" id="mainContent" style="display:none;">
 
-      <!-- Tela inicial -->
-      <div id="welcomeSection" class="content-section" style="display:block;">
-        <div class="welcome-container">
-          <div class="welcome-header">
-            <h2>🎯 Bem-vindo ao Sistema FUNASE</h2>
-            <p>Escolha uma das opções acima para começar.</p>
-          </div>
+      <div id="dashboardSection" class="content-section" style="display:block;">
+        <div class="card">
+          <h3>📊 Dashboard</h3>
+          <p class="muted">Bem-vindo! Use o menu acima para navegar.</p>
         </div>
       </div>
 
-      <!-- Registrar Atividade -->
-      <div id="formSection" class="content-section">
-        <div class="form-container">
-          <div class="activity-card card" id="activity-1">
-            <div class="activity-header row" style="align-items:center;">
-              <div class="activity-title"><strong>📝 Atividade 1</strong></div>
-              <div style="margin-left:auto">
-                <button class="btn btn-danger" onclick="removeActivity(1)">🗑️ Remover</button>
-              </div>
+      <div id="formSection" class="content-section" style="display:none;">
+        <div class="card">
+          <h3>📝 Registrar Atividade</h3>
+          <div class="row">
+            <div><label>Data</label><input type="date" id="atv-data"></div>
+            <div>
+              <label>Período</label>
+              <select id="atv-periodo">
+                <option value="">Selecione…</option>
+                <option>Manhã</option><option>Tarde</option><option>Noite</option><option>Integral</option>
+              </select>
             </div>
-
-            <div class="form-row mobile-stack row">
-              <div class="form-group">
-                <label for="data-1">📅 Data da Atividade:</label>
-                <input type="date" id="data-1" required />
-              </div>
-              <div class="form-group">
-                <label for="periodo-1">⏰ Período:</label>
-                <select id="periodo-1" required>
-                  <option value="">Selecione...</option>
-                  <option>Manhã</option><option>Tarde</option><option>Noite</option><option>Integral</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label for="tipo-atividade-1">🏠 Tipo de Atividade:</label>
-                <select id="tipo-atividade-1" required>
-                  <option value="">Selecione...</option>
-                  <option>Interna</option><option>Externa</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="atividade-1">🎯 Nome da Atividade:</label>
-              <div class="input-with-buttons">
-                <input type="text" id="atividade-1" placeholder="Digite o nome da atividade..." required />
-                <div class="input-buttons">
-                  <button class="input-button dropdown-button" onclick="toggleActivityDropdown(1)" title="Ver opções">⬇️</button>
-                  <button class="input-button star-button" onclick="saveFavoriteActivity(1)" title="Salvar como Favorita">⭐</button>
-                </div>
-                <div class="activity-dropdown" id="dropdown-1" style="display:none;"></div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="description-1">📝 Descrição Detalhada (opcional):</label>
-              <textarea id="description-1" rows="5" oninput="updateCharCounter(1)"></textarea>
-              <div class="char-counter muted" id="char-counter-1">0 / 1000 palavras</div>
-            </div>
-
-            <div class="form-group">
-              <label for="promotor-1">🎪 Promovido por:</label>
-              <div class="promotor-container row">
-                <select id="promotor-1" required>
-                  <option value="">Selecione...</option>
-                  <option>Própria Unidade</option>
-                  <option>Eixo Cultura</option>
-                </select>
-                <div class="button-row">
-                  <button class="action-button add-button" onclick="addPromotor(1)" title="Adicionar Novo Promotor">➕</button>
-                  <button class="action-button star-button" onclick="saveFavoritePromotor(1)" title="Salvar Favorito">⭐</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>👥 Jovens Participantes:</label>
-              <div class="participants-container" id="jovens-container-1">
-                <div class="participant-input" id="jovem-input-1-1">
-                  <input type="text" id="jovem-1-1" placeholder="Nome do jovem 1" oninput="updateParticipantStatus(1,1,'jovem')" />
-                </div>
-                <div class="button-row">
-                  <button class="action-button add-button" onclick="addJovem(1)" title="Adicionar Jovem">➕</button>
-                  <button class="action-button star-button" onclick="saveFavoriteJovem(1,1)" title="Salvar Jovem como Favorito">⭐</button>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>👔 Equipe Participante:</label>
-              <div class="team-container" id="equipe-container-1">
-                <div class="team-member" id="equipe-member-1-1">
-                  <input type="text" id="equipe-nome-1-1" placeholder="Nome do membro da equipe" oninput="updateParticipantStatus(1,1,'equipe')" />
-                  <button class="action-button star-button" onclick="saveFavoriteParticipante(1,1)" title="Salvar Participante como Favorito">⭐</button>
-                  <button class="action-button remove-button" onclick="removeTeamMember(1,1)" title="Remover Membro">🗑️</button>
-                  <div class="cargo-container">
-                    <div class="input-with-buttons">
-                      <input type="text" id="equipe-cargo-1-1" placeholder="Digite o cargo ou clique na seta" oninput="updateParticipantStatus(1,1,'cargo')" />
-                      <div class="input-buttons">
-                        <button class="input-button dropdown-button" onclick="toggleCargoDropdown(1,1)" title="Ver opções">⬇️</button>
-                        <button class="input-button star-button" onclick="saveFavoriteCargo(1,1)" title="Salvar Cargo como Favorito">⭐</button>
-                      </div>
-                      <div class="activity-dropdown" id="cargo-dropdown-1-1" style="display:none;"></div>
-                    </div>
-                  </div>
-                </div>
-                <button class="action-button add-button" onclick="addTeamMember(1)" title="Adicionar Membro da Equipe">➕</button>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label>📸 Fotos da Atividade (até 10 fotos):</label>
-              <div class="photo-container" id="photo-container-1">
-                <input type="file" id="photo-input-1" accept="image/*" multiple style="display:none;" onchange="handlePhotoUpload(this,1)" />
-                <div class="photo-upload-btn" onclick="triggerPhotoUpload(1)">
-                  <span>📷</span>
-                  <span>Adicionar Fotos</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="form-actions">
-              <button class="save-btn" onclick="saveActivity(1)">💾 Salvar</button>
-              <button class="save-btn" onclick="sendActivity(1)">📧 Enviar</button>
+            <div>
+              <label>Tipo</label>
+              <select id="atv-tipo">
+                <option value="">Selecione…</option>
+                <option>Interna</option><option>Externa</option>
+              </select>
             </div>
           </div>
-
-          <div class="add-activity-container row">
-            <button class="btn btn-primary" onclick="addNewActivity()">➕ Adicionar Nova Atividade</button>
-            <button class="btn btn-secondary" onclick="duplicateLastActivity()">📋 Duplicar Última Atividade</button>
-          </div>
+          <div class="row"><div style="flex:1"><label>Atividade</label><input id="atv-nome" placeholder="Ex.: Teatro"></div></div>
+          <div class="row"><div style="flex:1"><label>Descrição</label><textarea id="atv-desc" rows="4"></textarea></div></div>
+          <button class="btn btn-primary" onclick="salvarAtividade()">💾 Salvar</button>
+          <div id="atv-msg" class="muted" style="margin-top:8px;"></div>
         </div>
       </div>
 
-      <!-- Cadastrar Convite (ADMIN) -->
-      <div id="cadastrarConviteSection" class="content-section" style="display:none;">
+      <div id="convitesDisponiveisSection" class="content-section" style="display:none;">
         <div class="card">
-          <h3>🎫 Novo Convite</h3>
-          <div class="row">
-            <div><label>Título</label><input id="cv-titulo" placeholder="Nome do evento"></div>
-            <div><label>Local</label><input id="cv-local" placeholder="Auditório..."></div>
-          </div>
-          <div class="row">
-            <div><label>Data</label><input id="cv-data" type="date"></div>
-            <div><label>Vagas</label><input id="cv-vagas" type="number" min="1" value="10"></div>
-          </div>
-          <div class="row">
-            <div class="row" style="flex:1"><label>Descrição</label><textarea id="cv-desc" rows="3" placeholder="Detalhes..."></textarea></div>
-          </div>
-          <button class="btn btn-primary" onclick="criarConvite()">Salvar Convite</button>
+          <h3>📨 Convites Disponíveis</h3>
+          <p class="muted">Exemplo simples (lista estática). Você pode expandir depois.</p>
+          <ul>
+            <li>Oficina de Música — 20/09</li>
+            <li>Jogo de Vôlei — 25/09</li>
+          </ul>
         </div>
+      </div>
+
+      <div id="minhasInscricoesSection" class="content-section" style="display:none;">
         <div class="card">
-          <h4>Convites Criados</h4>
-          <div id="adminConvites
+          <h3>✅ Minhas Inscrições</h3>
+          <p class="muted">Nenhuma no momento.</p>
+        </div>
+      </div>
+
+      <div id="savedFormsSection" class="content-section" style="display:none;">
+        <div class="card">
+          <h3>📋 Formulários Salvos</h3>
+          <div id="lista-salvos"></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // ======= estado =======
+    let currentUser = null;
+
+    // ======= helpers =======
+    function setLoginMsg(txt, ok=false){
+      const el = document.getElementById('loginMsg');
+      el.textContent = txt || '';
+      el.style.color = ok ? '#16a34a' : '#ef4444';
+    }
+
+    function showSection(id){
+      document.querySelectorAll('.content-section').forEach(s => s.style.display='none');
+      const tgt = document.getElementById(id);
+      if (tgt) tgt.style.display = 'block';
+      if (id === 'savedFormsSection') renderSalvos();
+    }
+
+    function logout(){
+      currentUser = null;
+      localStorage.removeItem('rememberedUser');
+      document.getElementById('loginSection').style.display = 'block';
+      document.getElementById('menu').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('userSection').style.display = 'none';
+      setLoginMsg('');
+    }
+
+    // ======= login =======
+    window.addEventListener('DOMContentLoaded', () => {
+      const remembered = localStorage.getItem('rememberedUser');
+      if (remembered) {
+        document.getElementById('email').value = remembered;
+        document.getElementById('rememberMe').checked = true;
+      }
+
+      document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('email').value || '').trim().toLowerCase();
+        const senha = (document.getElementById('password').value || '').trim();
+        const lembrar = document.getElementById('rememberMe').checked;
+
+        if (!email.endsWith('@funase.pe.gov.br')) return setLoginMsg('Use apenas e-mails @funase.pe.gov.br');
+        if (senha !== 'funase2024') return setLoginMsg('Senha incorreta');
+
+        if (lembrar) localStorage.setItem('rememberedUser', email);
+        currentUser = email;
+
+        document.getElementById('loginSection').style.display = 'none';
+        document.getElementById('menu').style.display = 'block';
+        document.getElementById('mainContent').style.display = 'block';
+        document.getElementById('userSection').style.display = 'block';
+        document.getElementById('userEmail').textContent = email;
+
+        showSection('dashboardSection');
+      });
+    });
+
+    // ======= salvar atividade (localStorage) =======
+    function salvarAtividade(){
+      const a = {
+        id: Date.now(),
+        data: document.getElementById('atv-data').value,
+        periodo: document.getElementById('atv-periodo').value,
+        tipo: document.getElementById('atv-tipo').value,
+        nome: document.getElementById('atv-nome').value,
+        desc: document.getElementById('atv-desc').value
+      };
+      const lista = JSON.parse(localStorage.getItem('atividades') || '[]');
+      lista.push(a);
+      localStorage.setItem('atividades', JSON.stringify(lista));
+      document.getElementById('atv-msg').textContent = 'Salvo!';
+    }
+
+    function renderSalvos(){
+      const box = document.getElementById('lista-salvos');
+      const lista = JSON.parse(localStorage.getItem('atividades') || '[]');
+      if (lista.length === 0){ box.innerHTML = '<p class="muted">Nenhum formulário salvo.</p>'; return; }
+      box.innerHTML = '<ul>' + lista.map(a => `<li>${a.nome || '(sem nome)'} — ${a.data || '-'}</li>`).join('') + '</ul>';
+    }
+  </script>
+</body>
+</html>
