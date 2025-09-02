@@ -74,28 +74,84 @@
     </header>
 
     <!-- Login -->
-    <div id="loginSection" class="login-section">
-      <div class="login-container">
-        <div class="login-header">
-          <h2>🔐 Acesso ao Sistema</h2>
-          <p>Entre com suas credenciais da FUNASE</p>
-        </div>
-        <form onsubmit="login(); return false;" autocomplete="on">
-          <div class="form-group">
-            <label for="email">📧 E-mail:</label>
-            <input type="email" id="email" placeholder="seu.email@funase.pe.gov.br" required autocomplete="username" />
-          </div>
-          <div class="form-group">
-            <label for="password">🔑 Senha:</label>
-            <input type="password" id="password" placeholder="Digite sua senha" required autocomplete="current-password" />
-          </div>
-          <div class="form-group">
-            <label><input type="checkbox" id="rememberMe" /> Lembrar-me</label>
-          </div>
-          <button type="submit" class="login-btn">🚀 Entrar</button>
-        </form>
-      </div>
-    </div>
+    <script>
+// ======= Login (robusto e com mensagens) =======
+let currentUser = null;
+let isAdmin = false;
+let admins = JSON.parse(localStorage.getItem('admins') || '["cultura@funase.pe.gov.br"]');
+
+function setMsg(txt, ok=false){
+  const el = document.getElementById('loginMsg');
+  if(!el) return;
+  el.textContent = txt;
+  el.style.color = ok ? '#16a34a' : '#ef4444';
+}
+
+function doLogin(email){
+  currentUser = email;
+  isAdmin = admins.includes(email);
+
+  // mostra seções
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('menu').style.display = 'block';
+  document.getElementById('mainContent').style.display = 'block';
+  document.getElementById('userSection').style.display = 'block';
+  document.getElementById('userEmail').textContent = email;
+
+  // botões de admin
+  ['cadastrarConviteBtn','backupBtn','usuariosBtn','relatoriosJuizBtn','welcomeConviteCard']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = isAdmin ? 'block' : 'none'; });
+
+  // vai pro dashboard
+  if (typeof showSection === 'function') showSection('dashboardSection');
+}
+
+function logout(){
+  currentUser = null; isAdmin = false;
+  localStorage.removeItem('rememberedUser');
+  document.getElementById('loginSection').style.display = 'block';
+  document.getElementById('menu').style.display = 'none';
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('userSection').style.display = 'none';
+  document.getElementById('email').value = '';
+  document.getElementById('password').value = '';
+  setMsg('');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  // lembrar usuário
+  const rememberedUser = localStorage.getItem('rememberedUser');
+  if (rememberedUser) {
+    const emailEl = document.getElementById('email');
+    const chk = document.getElementById('rememberMe');
+    if (emailEl) emailEl.value = rememberedUser;
+    if (chk) chk.checked = true;
+  }
+
+  // submit do formulário
+  const form = document.getElementById('loginForm');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = (document.getElementById('email').value || '').trim().toLowerCase();
+      const password = (document.getElementById('password').value || '').trim();
+      const remember = document.getElementById('rememberMe').checked;
+
+      // mensagens de debug amigáveis
+      if (!email.endsWith('@funase.pe.gov.br')) {
+        setMsg('Use apenas e-mails @funase.pe.gov.br'); return;
+      }
+      if (password !== 'funase2024') {
+        setMsg('Senha incorreta'); return;
+      }
+
+      if (remember) localStorage.setItem('rememberedUser', email);
+      setMsg('Entrando...', true);
+      doLogin(email);
+    });
+  }
+});
+</script>
 
     <!-- Menu -->
     <nav class="menu" id="menu" style="display:none;">
