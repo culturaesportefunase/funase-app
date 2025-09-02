@@ -1,0 +1,17 @@
+{
+    "name": "FUNASE - Sistema de Atividades",
+    "short_name": "FUNASE",
+    "description": "Sistema oficial de registro de atividades e convites da FUNASE",
+    "start_url": "/index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#1e3a8a",
+    "icons": [
+        {
+            "src": "icons/icon-72x72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        // Adicione outros ícones...
+    ]
+}
