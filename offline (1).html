@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Sistema FUNASE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .offline-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .offline-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            color: #64748b;
+        }
+
+        .offline-title {
+            color: #1e3a8a;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .offline-message {
+            color: #64748b;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .retry-btn {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .retry-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .offline-features {
+            margin-top: 30px;
+            text-align: left;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .offline-features h3 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .offline-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .offline-features li {
+            color: #64748b;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .offline-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #28a745;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .offline-container {
+                padding: 30px 20px;
+            }
+
+            .offline-title {
+                font-size: 1.5rem;
+            }
+
+            .offline-icon {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-icon">📡</div>
+        <h1 class="offline-title">Você está offline</h1>
+        <p class="offline-message">
+            Não foi possível conectar à internet. Verifique sua conexão e tente novamente.
+        </p>
+        
+        <button class="retry-btn" onclick="window.location.reload()">
+            🔄 Tentar Novamente
+        </button>
+
+        <div class="offline-features">
+            <h3>🏛️ Sistema FUNASE</h3>
+            <ul>
+                <li>Dados salvos localmente</li>
+                <li>Sincronização automática quando voltar online</li>
+                <li>Funcionalidades básicas disponíveis offline</li>
+                <li>Backup automático dos dados</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Verificar conexão periodicamente
+        function checkConnection() {
+            if (navigator.onLine) {
+                window.location.href = './';
+            }
+        }
+
+        // Verificar a cada 5 segundos
+        setInterval(checkConnection, 5000);
+
+        // Escutar eventos de conexão
+        window.addEventListener('online', function() {
+            window.location.href = './';
+        });
+
+        // Mostrar status da conexão
+        window.addEventListener('offline', function() {
+            console.log('Aplicação offline');
+        });
+    </script>
+</body>
+</html>
+
