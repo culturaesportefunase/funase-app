@@ -2808,6 +2808,42 @@
             });
           }
         </script>
+<!-- === Disparo de Convites (grátis) === -->
+<div class="content-section card" id="disparoSection">
+  <h3>📣 Disparo de Convites (WhatsApp / E-mail)</h3>
+
+  <div class="row">
+    <div style="flex:1">
+      <label>📱 Telefones (um por linha, com DDI+DDD, ex.: 5581xxxxxxxxx)</label>
+      <textarea id="telefones" rows="6" placeholder="5581999999999&#10;5581988888888"></textarea>
+    </div>
+    <div style="flex:1">
+      <label>✉️ E-mails (um por linha)</label>
+      <textarea id="emails" rows="6" placeholder="pessoa@funase.pe.gov.br&#10;outra@funase.pe.gov.br"></textarea>
+    </div>
+  </div>
+
+  <div class="row">
+    <div style="flex:1">
+      <label>📝 Mensagem (usada no WhatsApp e no corpo do e-mail)</label>
+      <textarea id="mensagem" rows="4" placeholder="Convite: atividade X em Y, dia Z às HH:MM."></textarea>
+    </div>
+    <div style="flex:1">
+      <label>🧾 Assunto do e-mail</label>
+      <input id="assunto" placeholder="Convite: atividade X" />
+      <div style="margin-top:10px" class="muted">Dica: personalize a mensagem com data/local.</div>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:10px">
+    <button class="btn btn-primary" onclick="gerarLinksWhats()">🔗 Gerar links de WhatsApp</button>
+    <button class="btn" onclick="enviarMailtoBCC()">✉️ Enviar e-mail (mailto BCC)</button>
+    <button class="btn" onclick="baixarCSV()">⬇️ Exportar lista (CSV)</button>
+  </div>
+
+  <div id="linksZap" class="list" style="margin-top:12px"></div>
+</div>
+
 </body>
 </html>
 
