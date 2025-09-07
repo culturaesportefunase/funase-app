@@ -60,3 +60,74 @@
     }
   ]
 }
+<script>
+// --- utilidades ---
+function linhasValidas(txt){
+  return (txt || '')
+    .split(/\r?\n|,|;/).map(s => s.trim())
+    .filter(s => s.length > 0);
+}
+
+// --- WHATSAPP: gera links (um por contato) ---
+function gerarLinksWhats(){
+  const nums = linhasValidas(document.getElementById('telefones').value)
+    .map(n => n.replace(/\D/g,''))              // só dígitos
+    .map(n => n.startsWith('55') ? n : '55'+n); // garante DDI Brasil
+  const msg = document.getElementById('mensagem').value || '';
+
+  const box = document.getElementById('linksZap');
+  box.innerHTML = '';
+  if (nums.length === 0) { box.innerHTML = '<p class="muted">Nenhum telefone válido.</p>'; return; }
+
+  nums.forEach(n => {
+    const a = document.createElement('a');
+    a.href = `https://wa.me/${n}?text=${encodeURIComponent(msg)}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = `Abrir conversa com ${n}`;
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.appendChild(a);
+    box.appendChild(div);
+  });
+}
+
+// --- E-MAIL: mailto com BCC (grátis, para lotes pequenos) ---
+function enviarMailtoBCC(){
+  const emails = linhasValidas(document.getElementById('emails').value)
+    .filter(e => /.+@.+\..+/.test(e));
+  if (emails.length === 0) { alert('Adicione ao menos 1 e-mail válido.'); return; }
+
+  const assunto = document.getElementById('assunto').value || 'Convite FUNASE';
+  const corpo   = document.getElementById('mensagem').value || '';
+
+  const link =
+    `mailto:?bcc=${encodeURIComponent(emails.join(','))}` +
+    `&subject=${encodeURIComponent(assunto)}` +
+    `&body=${encodeURIComponent(corpo)}`;
+
+  // Atenção: muitos e-mails podem exceder o tamanho máximo da URL do mailto
+  window.location.href = link;
+}
+
+// --- CSV: telefones/emails para usar no Google Sheets ---
+function baixarCSV(){
+  const tels = linhasValidas(document.getElementById('telefones').value);
+  const mails= linhasValidas(document.getElementById('emails').value);
+  const linhas = ['telefone,email'];
+
+  const max = Math.max(tels.length, mails.length);
+  for (let i=0;i<max;i++){
+    const t = (tels[i]||'').replace(/"/g,'""');
+    const e = (mails[i]||'').replace(/"/g,'""');
+    linhas.push(`"${t}","${e}"`);
+  }
+
+  const blob = new Blob([linhas.join('\n')], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'contatos-funase.csv';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+</script>
