@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico de Erros Vercel</title>
+    <style>
+        :root {
+            --primary: #0070f3;
+            --secondary: #7928ca;
+            --success: #17c964;
+            --warning: #f5a623;
+            --error: #ff4c4c;
+            --light: #fafafa;
+            --dark: #333;
+            --gray: #eaeaea;
+            --dark-gray: #666;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .error-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .error-card {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 20px;
+            border-left: 4px solid var(--error);
+            transition: transform 0.2s;
+        }
+        
+        .error-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .error-code {
+            font-weight: bold;
+            color: var(--error);
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .error-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .error-desc {
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+        }
+        
+        .solution {
+            background-color: rgba(0, 112, 243, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: var(--gray);
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .filter-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .status-internal {
+            background-color: rgba(255, 76, 76, 0.2);
+            color: var(--error);
+        }
+        
+        .status-500 {
+            background-color: rgba(245, 166, 35, 0.2);
+            color: var(--warning);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: var(--gray);
+            color: var(--dark);
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--dark-gray);
+            font-size: 0.9rem;
+            margin-top: 40px;
+        }
+        
+        @media (max-width: 768px) {
+            .error-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Diagnóstico de Erros da Vercel</h1>
+            <p class="subtitle">Identifique e resolva problemas comuns da plataforma</p>
+        </header>
+        
+        <div class="content">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Pesquisar erro por nome ou código...">
+            </div>
+            
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todos os Erros</button>
+                <button class="filter-btn" data-filter="internal">Erros Internos</button>
+                <button class="filter-btn" data-filter="500">Erros 500</button>
+                <button class="filter-btn" data-filter="cache">Problemas de Cache</button>
+                <button class="filter-btn" data-filter="function">Problemas de Função</button>
+            </div>
+            
+            <div class="error-grid" id="errorGrid">
+                <!-- Erros serão inseridos via JavaScript -->
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-primary">
+                    <span>📞</span> Contatar Suporte Vercel
+                </button>
+                <button class="btn btn-secondary">
+                    <span>📋</span> Copiar Relatório de Diagnóstico
+                </button>
+                <button class="btn btn-secondary">
+                    <span>🔄</span> Executar Verificação Novamente
+                </button>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Esta ferramenta é apenas para fins informativos. Entre em contato com o suporte da Vercel para assistência técnica oficial.</p>
+            <p>© 2023 - Diagnostic Tool for Vercel</p>
+        </footer>
+    </div>
+
+    <script>
+        // Dados dos erros
+        const vercelErrors = [
+            {
+                code: "FUNCTION_THROTTLED",
+                name: "Função Limitada",
+                description: "Sua função foi limitada devido ao excesso de requisições.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Aguarde alguns minutos e tente novamente. Considere otimizar seu código ou aumentar os limites se necessário.",
+                category: ["internal", "500", "function"]
+            },
+            {
+                code: "INTERNAL_CACHE_ERROR",
+                name: "Erro Interno de Cache",
+                description: "Ocorreu um erro interno no sistema de cache da Vercel.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Tente limpar o cache do seu projeto nas configurações da Vercel ou aguarde a resolução automática.",
+                category: ["internal", "500", "cache"]
+            },
+            {
+                code: "INTERNAL_CACHE_KEY_TOO_LONG",
+                name: "Chave de Cache Muito Longa",
+                description: "A chave utilizada para o cache excede o tamanho máximo permitido.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Reduza o tamanho das chaves de cache utilizadas em sua aplicação.",
+                category: ["internal", "500", "cache"]
+            },
+            {
+                code: "INTERNAL_CACHE_LOCK_FULL",
+                name: "Bloqueio de Cache Cheio",
+                description: "O sistema de bloqueio de cache atingiu sua capacidade máxima.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Aguarde alguns instantes e tente novamente. Se persistir, contate o suporte.",
+                category: ["internal", "500", "cache"]
+            },
+            {
+                code: "INTERNAL_DEPLOYMENT_FETCH_FAILED",
+                name: "Falha ao Buscar Deployment",
+                description: "Falha interna ao tentar buscar informações sobre o deployment.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Verifique se o deployment existe e se você tem permissões para acessá-lo.",
+                category: ["internal", "500"]
+            },
+            {
+                code: "INTERNAL_EDGE_FUNCTION_INVOCATION_FAILED",
+                name: "Falha na Invocação de Edge Function",
+                description: "Falha ao executar uma Edge Function na rede de borda da Vercel.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Verifique o código da sua Edge Function e os logs para identificar o problema.",
+                category: ["internal", "500", "function"]
+            },
+            {
+                code: "INTERNAL_FUNCTION_INVOCATION_FAILED",
+                name: "Falha na Invocação de Função",
+                description: "Falha ao executar uma Function Serverless na Vercel.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Verifique se sua função está corretamente implementada e se todos os módulos necessários estão incluídos.",
+                category: ["internal", "500", "function"]
+            },
+            {
+                code: "INTERNAL_FUNCTION_NOT_FOUND",
+                name: "Função Não Encontrada",
+                description: "A função solicitada não foi encontrada no deployment.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Verifique se a função foi corretamente implantada e se o caminho está correto.",
+                category: ["internal", "500", "function"]
+            },
+            {
+                code: "INTERNAL_OPTIMIZED_IMAGE_REQUEST_FAILED",
+                name: "Falha no Request de Imagem Otimizada",
+                description: "Falha ao processar uma solicitação para o otimizador de imagem da Vercel.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Verifique se a imagem existe e se está em um formato suportado.",
+                category: ["internal", "500"]
+            },
+            {
+                code: "INTERNAL_UNEXPECTED_ERROR",
+                name: "Erro Inesperado",
+                description: "Ocorreu um erro inesperado na plataforma Vercel.",
+                status: "Internal",
+                statusCode: 500,
+                solution: "Tente novamente em alguns minutos. Se o erro persistir, contate o suporte.",
+                category: ["internal", "500"]
+            }
+        ];
+
+        // Função para renderizar os erros
+        function renderErrors(filter = 'all') {
+            const errorGrid = document.getElementById('errorGrid');
+            errorGrid.innerHTML = '';
+            
+            const filteredErrors = filter === 'all' 
+                ? vercelErrors 
+                : vercelErrors.filter(error => error.category.includes(filter));
+            
+            if (filteredErrors.length === 0) {
+                errorGrid.innerHTML = '<p>Nenhum erro encontrado com os filtros selecionados.</p>';
+                return;
+            }
+            
+            filteredErrors.forEach(error => {
+                const errorCard = document.createElement('div');
+                errorCard.className = 'error-card';
+                errorCard.innerHTML = `
+                    <div class="error-code">${error.code}</div>
+                    <div class="error-name">${error.name}</div>
+                    <div class="error-desc">${error.description}</div>
+                    <div class="status-badge status-${error.statusCode}">Status: ${error.statusCode}</div>
+                    <div class="status-badge status-${error.status.toLowerCase()}">Tipo: ${error.status}</div>
+                    <div class="solution">
+                        <strong>Solução:</strong> ${error.solution}
+                    </div>
+                `;
+                errorGrid.appendChild(errorCard);
+            });
+        }
+        
+        // Inicializar a página
+        document.addEventListener('DOMContentLoaded', function() {
+            // Renderizar todos os erros inicialmente
+            renderErrors();
+            
+            // Adicionar event listeners aos filtros
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    renderErrors(this.dataset.filter);
+                });
+            });
+            
+            // Adicionar funcionalidade de pesquisa
+            document.getElementById('searchInput').addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const errorGrid = document.getElementById('errorGrid');
+                errorGrid.innerHTML = '';
+                
+                const filteredErrors = vercelErrors.filter(error => 
+                    error.code.toLowerCase().includes(searchTerm) || 
+                    error.name.toLowerCase().includes(searchTerm) ||
+                    error.description.toLowerCase().includes(searchTerm)
+                );
+                
+                if (filteredErrors.length === 0) {
+                    errorGrid.innerHTML = '<p>Nenhum erro encontrado com o termo de pesquisa.</p>';
+                    return;
+                }
+                
+                filteredErrors.forEach(error => {
+                    const errorCard = document.createElement('div');
+                    errorCard.className = 'error-card';
+                    errorCard.innerHTML = `
+                        <div class="error-code">${error.code}</div>
+                        <div class="error-name">${error.name}</div>
+                        <div class="error-desc">${error.description}</div>
+                        <div class="status-badge status-${error.statusCode}">Status: ${error.statusCode}</div>
+                        <div class="status-badge status-${error.status.toLowerCase()}">Tipo: ${error.status}</div>
+                        <div class="solution">
+                            <strong>Solução:</strong> ${error.solution}
+                        </div>
+                    `;
+                    errorGrid.appendChild(errorCard);
+                });
+            });
+            
+            // Simular funcionalidade dos botões
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                alert('Redirecionando para a página de suporte da Vercel...');
+            });
+            
+            document.querySelectorAll('.btn-secondary')[0].addEventListener('click', function() {
+                const report = vercelErrors.map(error => 
+                    `${error.code}: ${error.name}\nSolução: ${error.solution}\n`
+                ).join('\n');
+                
+                navigator.clipboard.writeText(report)
+                    .then(() => alert('Relatório copiado para a área de transferência!'))
+                    .catch(err => console.error('Falha ao copiar texto: ', err));
+            });
+            
+            document.querySelectorAll('.btn-secondary')[1].addEventListener('click', function() {
+                alert('Executando verificação novamente...');
+                renderErrors(document.querySelector('.filter-btn.active').dataset.filter);
+            });
+        });
+    </script>
+</body>
+</html>
