@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Atividades Cultura, Lazer e Esportes - FUNASE</title>
+<meta name="description" content="Sistema de registro de atividades e convites da FUNASE - Fundação de Atendimento Socioeducativo" />
+<meta name="theme-color" content="#1e3a8a" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<div class="container">
+<header class="header"><div class="header-content"><div class="logo-section"><div class="logo">🎭</div><div class="title-section"><h1>Atividades Cultura, Lazer e Esportes - FUNASE</h1><p>Sistema de Registro de Atividades</p></div></div><div class="user-section" id="userSection" style="display:none;"><span id="userEmail"></span><button class="logout-btn" onclick="logout()">🚪 Sair</button></div></div></header>
+<nav class="menu" id="menu" style="display:none;"><div class="menu-container"><button class="menu-button" onclick="showSection('dashboardSection')">📊 Dashboard</button><button class="menu-button" onclick="showSection('formSection')">📝 Registrar Atividade</button><button class="menu-button" onclick="showSection('savedFormsSection')">📋 Formulários Salvos</button><button class="menu-button" onclick="showSection('convitesDisponiveisSection')">📨 Convites</button><button class="menu-button" onclick="showSection('contatosSection')">📇 Contatos</button></div></nav>
+<div id="loginSection" class="login-section"><div class="login-container card"><div class="login-header"><h3>🔐 Acesso ao Sistema</h3><p class="muted">Entre com suas credenciais da FUNASE</p></div><form id="loginForm" autocomplete="on"><div class="form-group"><label for="email">📧 E-mail</label><input type="email" id="email" placeholder="seu.email@funase.pe.gov.br" required autocomplete="username" /></div><div class="form-group"><label for="password">🔑 Senha</label><input type="password" id="password" placeholder="Digite sua senha" required autocomplete="current-password" /></div><div class="form-group"><label><input type="checkbox" id="rememberMe" /> Lembrar-me</label></div><button type="submit" class="login-btn btn btn-primary">🚀 Entrar</button><div id="loginMsg" class="muted" style="margin-top:8px;"></div></form></div></div>
+<main class="main-content" id="mainContent" style="display:none;">
+<div id="dashboardSection" class="content-section" style="display:block;"><div class="card"><h3>📊 Dashboard</h3><div class="row"><div class="card"><div class="muted">Atividades salvas</div><div id="kpi-ativ" style="font-size:28px;font-weight:700">0</div></div><div class="card"><div class="muted">Convites</div><div id="kpi-conv" style="font-size:28px;font-weight:700">0</div></div></div></div></div>
+<div id="formSection" class="content-section" style="display:none;"><div class="card"><h3>📝 Registrar Atividade</h3><div class="row"><div><label>Data</label><input type="date" id="atv-data"></div><div><label>Período</label><select id="atv-periodo"><option value="">Selecione…</option><option>Manhã</option><option>Tarde</option><option>Noite</option><option>Integral</option></select></div><div><label>Tipo</label><select id="atv-tipo"><option value="">Selecione…</option><option>Interna</option><option>Externa</option></select></div></div><div class="row"><div style="flex:1"><label>Atividade</label><input id="atv-nome" placeholder="Ex.: Teatro"></div></div><div class="row"><div style="flex:1"><label>Descrição</label><textarea id="atv-desc" rows="4"></textarea></div></div><button class="btn btn-primary" onclick="salvarAtividade()">💾 Salvar</button><div id="atv-msg" class="muted" style="margin-top:8px;"></div></div></div>
+<div id="savedFormsSection" class="content-section" style="display:none;"><div class="card"><h3>📋 Formulários Salvos</h3><div id="lista-salvos"></div></div></div>
+<div id="convitesDisponiveisSection" class="content-section" style="display:none;"><div class="card"><h3>📨 Convites</h3><p class="muted">Exemplo simples (você pode evoluir depois).</p><ul><li>Oficina de Música — 20/09</li><li>Jogo de Vôlei — 25/09</li></ul></div></div>
+<div id="contatosSection" class="content-section" style="display:none;"><div class="card"><h3>📇 Contatos</h3><div class="row" style="align-items:flex-end"><div style="flex:2"><label>Nome</label><input id="ctt-nome" placeholder="Ex.: Maria Silva"></div><div><label>Telefone (só números)</label><input id="ctt-telefone" placeholder="55819XXXXXXXX"></div><div><label>E-mail</label><input id="ctt-email" placeholder="pessoa@funase.pe.gov.br"></div><div><label>Tags</label><input id="ctt-tags" placeholder="cultura, esporte"></div><div><button class="btn btn-primary" id="ctt-salvarBtn" onclick="contatosSalvar()">Salvar</button> <button class="btn" id="ctt-cancelarBtn" onclick="contatosCancelarEdicao()" style="display:none;">Cancelar</button></div></div><div class="row" style="margin-top:10px;align-items:center"><div style="flex:1"><input id="ctt-busca" placeholder="🔎 Buscar por nome, e-mail ou tag…" oninput="contatosRender()"></div><div><input type="file" id="ctt-arquivo" accept=".csv" style="display:none" onchange="contatosImportarCSV(this)"><button class="btn" onclick="document.getElementById('ctt-arquivo').click()">⤴️ Importar CSV</button><button class="btn" onclick="contatosExportarCSV()">⬇️ Exportar CSV</button><button class="btn btn-danger" onclick="contatosExcluirSelecionados()">🗑️ Excluir selecionados</button></div></div></div>
+<div class="card"><div class="row" style="align-items:flex-end"><div style="flex:2"><label>📝 Mensagem</label><textarea id="ctt-mensagem" rows="3" placeholder="Convite: atividade X em Y, dia Z às HH:MM."></textarea></div><div style="flex:1"><label>✉️ Assunto (e-mail)</label><input id="ctt-assunto" placeholder="Convite: atividade X"><div class="row" style="margin-top:10px"><button class="btn btn-primary" onclick="contatosGerarWhats()">🔗 WhatsApp (links)</button><button class="btn" onclick="contatosMailto()">✉️ E-mail (mailto BCC)</button><button class="btn" onclick="contatosEnviarWhatsAPI()">🤖 WhatsApp API (selecionados)</button></div></div></div></div>
+<div class="card"><div class="row" style="align-items:center"><div><label><input type="checkbox" id="ctt-checkAll" onclick="contatosToggleTodos(this)"> Selecionar todos</label></div><div class="muted" style="margin-left:auto" id="ctt-contagem"></div></div><div class="table-wrap" style="overflow:auto;"><table id="ctt-tabela"><thead><tr><th></th><th>Nome</th><th>Telefone</th><th>E-mail</th><th>Tags</th><th style="width:120px">Ações</th></tr></thead><tbody></tbody></table></div><div id="linksZap" class="list" style="margin-top:12px"></div></div>
+</div></main></div>
+<script>
+let currentUser=null;
+function setLoginMsg(txt,ok=false){const el=document.getElementById('loginMsg'); el.textContent=txt||''; el.style.color=ok?'#16a34a':'#ef4444';}
+function showSection(id){document.querySelectorAll('.content-section').forEach(s=>s.style.display='none'); const tgt=document.getElementById(id); if(tgt) tgt.style.display='block'; if(id==='savedFormsSection') renderSalvos(); if(id==='dashboardSection') renderKpis(); if(id==='contatosSection') contatosRender();}
+function logout(){currentUser=null; localStorage.removeItem('rememberedUser'); document.getElementById('loginSection').style.display='block'; document.getElementById('menu').style.display='none'; document.getElementById('mainContent').style.display='none'; document.getElementById('userSection').style.display='none'; setLoginMsg('');}
+window.addEventListener('DOMContentLoaded',()=>{
+  const remembered=localStorage.getItem('rememberedUser');
+  if(remembered){document.getElementById('email').value=remembered; document.getElementById('rememberMe').checked=true;}
+  document.getElementById('loginForm').addEventListener('submit',(e)=>{
+    e.preventDefault();
+    const email=(document.getElementById('email').value||'').trim().toLowerCase();
+    const senha=(document.getElementById('password').value||'').trim();
+    const lembrar=document.getElementById('rememberMe').checked;
+    if(!email.endsWith('@funase.pe.gov.br')) return setLoginMsg('Use apenas e-mails @funase.pe.gov.br');
+    if(senha!=='funase2024') return setLoginMsg('Senha incorreta');
+    if(lembrar) localStorage.setItem('rememberedUser', email);
+    currentUser=email;
+    document.getElementById('loginSection').style.display='none';
+    document.getElementById('menu').style.display='block';
+    document.getElementById('mainContent').style.display='block';
+    document.getElementById('userSection').style.display='block';
+    document.getElementById('userEmail').textContent=email;
+    showSection('dashboardSection');
+  });
+});
+function salvarAtividade(){
+  const a={id:Date.now(), data:document.getElementById('atv-data').value, periodo:document.getElementById('atv-periodo').value, tipo:document.getElementById('atv-tipo').value, nome:document.getElementById('atv-nome').value, desc:document.getElementById('atv-desc').value};
+  const lista=JSON.parse(localStorage.getItem('atividades')||'[]'); lista.push(a); localStorage.setItem('atividades', JSON.stringify(lista)); document.getElementById('atv-msg').textContent='Salvo!'; renderKpis();
+}
+function renderSalvos(){ const box=document.getElementById('lista-salvos'); const lista=JSON.parse(localStorage.getItem('atividades')||'[]'); if(lista.length===0){ box.innerHTML='<p class="muted">Nenhum formulário salvo.</p>'; return;} box.innerHTML='<ul>'+lista.map(a=>`<li>${a.nome||'(sem nome)'} — ${a.data||'-'}</li>`).join('')+'</ul>'; }
+function renderKpis(){ const lista=JSON.parse(localStorage.getItem('atividades')||'[]'); document.getElementById('kpi-ativ').textContent=lista.length; document.getElementById('kpi-conv').textContent=2; }
+
+// Contatos
+const CKEY='contatos'; let contatos=JSON.parse(localStorage.getItem(CKEY)||'[]'); let editId=null;
+function contatosSalvar(){ const nome=(document.getElementById('ctt-nome').value||'').trim(); let telefone=(document.getElementById('ctt-telefone').value||'').replace(/\D/g,''); const email=(document.getElementById('ctt-email').value||'').trim().toLowerCase(); const tags=(document.getElementById('ctt-tags').value||'').trim(); if(!telefone && !email){alert('Informe ao menos telefone ou e-mail.'); return;} if(telefone && !telefone.startsWith('55')) telefone='55'+telefone; if(editId){ contatos=contatos.map(c=>c.id===editId?{...c,nome,telefone,email,tags}:c);} else { contatos.push({id:Date.now(),nome,telefone,email,tags}); } localStorage.setItem(CKEY, JSON.stringify(contatos)); contatosLimparForm(); contatosRender(); }
+function contatosCancelarEdicao(){ editId=null; contatosLimparForm(); }
+function contatosLimparForm(){ ['ctt-nome','ctt-telefone','ctt-email','ctt-tags'].forEach(id=>document.getElementById(id).value=''); document.getElementById('ctt-salvarBtn').textContent='Salvar'; document.getElementById('ctt-cancelarBtn').style.display='none'; }
+function contatosEditar(id){ const c=contatos.find(x=>x.id===id); if(!c) return; document.getElementById('ctt-nome').value=c.nome||''; document.getElementById('ctt-telefone').value=(c.telefone||'').replace(/^55/,''); document.getElementById('ctt-email').value=c.email||''; document.getElementById('ctt-tags').value=c.tags||''; editId=id; document.getElementById('ctt-salvarBtn').textContent='Atualizar'; document.getElementById('ctt-cancelarBtn').style.display='inline-block'; }
+function contatosExcluir(id){ if(!confirm('Excluir este contato?')) return; contatos=contatos.filter(c=>c.id!==id); localStorage.setItem(CKEY, JSON.stringify(contatos)); contatosRender(); }
+function contatosExcluirSelecionados(){ const ids=Array.from(document.querySelectorAll('.ctt-check:checked')).map(ch=>Number(ch.value)); if(ids.length===0) return alert('Selecione contatos.'); if(!confirm(`Excluir ${ids.length} contato(s)?`)) return; contatos=contatos.filter(c=>!ids.includes(c.id)); localStorage.setItem(CKEY, JSON.stringify(contatos)); contatosRender(); }
+function contatosToggleTodos(chk){ document.querySelectorAll('.ctt-check').forEach(c=>c.checked=chk.checked); }
+function contatosFiltrados(){ const q=(document.getElementById('ctt-busca').value||'').trim().toLowerCase(); if(!q) return contatos; return contatos.filter(c=>[c.nome,c.email,c.tags,c.telefone].join(' ').toLowerCase().includes(q)); }
+function contatosRender(){ const data=contatosFiltrados(); const tb=document.querySelector('#ctt-tabela tbody'); tb.innerHTML=''; data.forEach(c=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><input type="checkbox" class="ctt-check" value="${c.id}"></td><td>${c.nome||'-'}</td><td>${c.telefone||'-'}</td><td>${c.email||'-'}</td><td>${c.tags||'-'}</td><td><button class="btn" onclick="contatosEditar(${c.id})">Editar</button> <button class="btn btn-danger" onclick="contatosExcluir(${c.id})">Excluir</button></td>`; tb.appendChild(tr); }); document.getElementById('ctt-contagem').textContent=`${data.length} contato(s)`; const all=document.getElementById('ctt-checkAll'); if(all) all.checked=false; }
+
+function contatosExportarCSV(){ const linhas=['nome,telefone,email,tags']; contatosFiltrados().forEach(c=>{ const esc=s=>`"${String(s||'').replace(/"/g,'""')}"`; linhas.push([esc(c.nome),esc(c.telefone),esc(c.email),esc(c.tags)].join(',')); }); const blob=new Blob([linhas.join('\n')],{type:'text/csv;charset=utf-8'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='contatos.csv'; a.click(); URL.revokeObjectURL(a.href); }
+function contatosImportarCSV(input){ const f=input.files[0]; if(!f) return; const r=new FileReader(); r.onload=()=>{ const linhas=r.result.split(/\r?\n/).filter(Boolean).slice(1); linhas.forEach(l=>{ const cols=l.split(',').map(s=>s.replace(/^"|"$/g,'').replace(/""/g,'"')); const [nome,telefone,email,tags]=cols; if(!(telefone||email)) return; const tel=(telefone||'').replace(/\D/g,''); contatos.push({id:Date.now()+Math.random(),nome,telefone:tel?(tel.startsWith('55')?tel:'55'+tel):'',email,tags}); }); localStorage.setItem(CKEY, JSON.stringify(contatos)); input.value=''; contatosRender(); }; r.readAsText(f); }
+
+function linhasValidas(txt){ return (txt||'').split(/\r?\n|,|;/).map(s=>s.trim()).filter(s=>s.length>0); }
+function contatosSelecionados(){ const ids=Array.from(document.querySelectorAll('.ctt-check:checked')).map(ch=>Number(ch.value)); return contatos.filter(c=>ids.includes(c.id)); }
+function contatosGerarWhats(){ const sel=contatosSelecionados(); const msg=document.getElementById('ctt-mensagem').value||''; const withTel=sel.filter(c=>c.telefone); const box=document.getElementById('linksZap'); box.innerHTML=''; if(withTel.length===0){ box.innerHTML='<p class="muted">Nenhum telefone válido nos selecionados.</p>'; return;} withTel.forEach(c=>{ const a=document.createElement('a'); a.href=`https://wa.me/${c.telefone}?text=${encodeURIComponent(msg)}`; a.target='_blank'; a.rel='noopener'; a.textContent=`Abrir conversa com ${c.nome||c.telefone}`; const div=document.createElement('div'); div.className='card'; div.appendChild(a); box.appendChild(div); }); }
+function contatosMailto(){ const sel=contatosSelecionados(); const emails=sel.map(c=>c.email).filter(e=>/.+@.+\..+/.test(e)); if(emails.length===0) return alert('Nenhum e-mail válido nos selecionados.'); const assunto=document.getElementById('ctt-assunto').value||'Convite FUNASE'; const corpo=document.getElementById('ctt-mensagem').value||''; const link=`mailto:?bcc=${encodeURIComponent(emails.join(','))}&subject=${encodeURIComponent(assunto)}&body=${encodeURIComponent(corpo)}`; window.location.href=link; }
+
+// API WhatsApp
+async function enviarWhatsAPI(para, texto, template=null){ const payload= template ? {to:para, template} : {to:para, text:texto||''}; const resp=await fetch('/api/whatsapp',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await resp.json(); if(!resp.ok){const msg=(data&&(data.error?.message||data.message))||JSON.stringify(data); throw new Error(msg||'Falha no envio');} return data; }
+async function contatosEnviarWhatsAPI(){ const sel=contatosSelecionados(); const withTel=sel.filter(c=>c.telefone); if(withTel.length===0) return alert('Selecione contatos com telefone.'); const texto=document.getElementById('ctt-mensagem').value||''; if(withTel.length>5 && !confirm(`Enviar via API para ${withTel.length} contato(s)?`)) return; let ok=0,erros=0; for(const c of withTel){ try{ await enviarWhatsAPI(c.telefone, texto); ok++; }catch(e){ console.error('Falha',c,e); erros++; } } alert(`Concluído: ${ok} enviado(s) • ${erros} falha(s)`); }
+
+// Service Worker
+if('serviceWorker' in navigator){ window.addEventListener('load',()=>{ navigator.serviceWorker.register('/service-worker.js').then(reg=>console.log('SW:',reg.scope)).catch(err=>console.error('SW falhou:',err)); }); }
+</script>
+</body></html>
