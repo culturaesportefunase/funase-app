@@ -1,6 +1,0 @@
-const CACHE_NAME='funase-app-v1.4';
-const PRECACHE=['/','/index.html','/style.css','/manifest.json','/offline.html','/icons/icon-192x192.png','/icons/icon-512x512.png'];
-self.addEventListener('install',e=>{e.waitUntil((async()=>{const c=await caches.open(CACHE_NAME);for(const u of PRECACHE){try{const r=await fetch(u,{cache:'no-cache'});if(r&&r.ok)await c.put(u,r.clone());}catch(_){}}self.skipWaiting();})())});
-self.addEventListener('activate',e=>{e.waitUntil((async()=>{const ks=await caches.keys();await Promise.all(ks.map(k=>k!==CACHE_NAME?caches.delete(k):null));await self.clients.claim();})())});
-self.addEventListener('fetch',e=>{const req=e.request;if(req.mode==='navigate'){e.respondWith((async()=>{try{return await fetch(req);}catch(e){return (await caches.match('/offline.html'))||new Response('Offline',{status:503});}})());return;}
-e.respondWith((async()=>{const m=await caches.match(req);if(m) return m;try{const r=await fetch(req);if(req.method==='GET'&&r&&r.ok&&r.type==='basic'){caches.open(CACHE_NAME).then(c=>c.put(req,r.clone()));}return r;}catch(err){const fb=await caches.match(req);if(fb) return fb;throw err;}})());});
